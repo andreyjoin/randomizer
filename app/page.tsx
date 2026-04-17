@@ -1,65 +1,124 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import CountStep from "./components/randomizer/steps/CountStep";
+import LabelsStep from "./components/randomizer/steps/LabelsStep";
+import SpinStep from "./components/randomizer/steps/SpinStep";
+import ResultStep from "./components/randomizer/steps/ResultStep";
+
+type Step = "count" | "labels" | "spin" | "result";
 
 export default function Home() {
+  const [step, setStep] = useState<Step>("count");
+  const [count, setCount] = useState(2);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [winner, setWinner] = useState("");
+  const [spinKey, setSpinKey] = useState(0);
+
+  const handleCountSelect = (n: number) => {
+    setCount(n);
+    setLabels(Array.from({ length: n }, (_, i) => `Вариант ${i + 1}`));
+    setStep("labels");
+  };
+
+  const handleLabelsConfirm = (newLabels: string[]) => {
+    setLabels(newLabels);
+    setStep("spin");
+  };
+
+  const handleSpinResult = (w: string) => {
+    setWinner(w);
+    setStep("result");
+  };
+
+  const handleSpinAgain = () => {
+    setSpinKey((k) => k + 1);
+    setStep("spin");
+  };
+
+  const handleRestart = () => {
+    setCount(2);
+    setLabels([]);
+    setWinner("");
+    setSpinKey(0);
+    setStep("count");
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="min-h-screen bg-[#faf8f3] flex flex-col items-center justify-center px-4 py-10">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="mb-12 text-center"
+      >
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[#1a1a2e]">
+          Рандомайзер
+        </h1>
+        <p className="mt-2 text-[#8a8a9a] text-sm font-medium">
+          Пусть удача решит за вас
+        </p>
+      </motion.div>
+
+      {/* Progress bar */}
+      <div className="flex items-center gap-2 mb-10">
+        {(["count", "labels", "spin", "result"] as Step[]).map((s, i) => {
+          const steps = ["count", "labels", "spin", "result"];
+          const currentIdx = steps.indexOf(step);
+          const isActive = i <= currentIdx;
+          const isCurrent = s === step;
+          return (
+            <div key={s} className="flex items-center gap-2">
+              <motion.div
+                animate={{
+                  backgroundColor: isActive ? "#e85d4e" : "#e0e0e0",
+                  scale: isCurrent ? 1.2 : 1,
+                }}
+                className="w-3 h-3 rounded-full"
+              />
+              {i < 3 && (
+                <div
+                  className={`w-8 h-0.5 rounded-full transition-colors duration-500 ${
+                    i < currentIdx ? "bg-[#e85d4e]" : "bg-[#e0e0e0]"
+                  }`}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Step content */}
+      <AnimatePresence mode="wait">
+        {step === "count" && (
+          <CountStep key="count" onSelect={handleCountSelect} />
+        )}
+        {step === "labels" && (
+          <LabelsStep
+            key="labels"
+            count={count}
+            onConfirm={handleLabelsConfirm}
+            onBack={() => setStep("count")}
+          />
+        )}
+        {step === "spin" && (
+          <SpinStep
+            key={`spin-${spinKey}`}
+            labels={labels}
+            onResult={handleSpinResult}
+          />
+        )}
+        {step === "result" && (
+          <ResultStep
+            key="result"
+            winner={winner}
+            onSpinAgain={handleSpinAgain}
+            onRestart={handleRestart}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
