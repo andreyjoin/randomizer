@@ -1,0 +1,20 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Рандомайзер" [level=1] [ref=e4]
+      - paragraph [ref=e5]: Пусть удача решит за вас
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - heading "Сколько вариантов?" [level=2] [ref=e20]
+        - paragraph [ref=e21]: Выберите количество или введите своё
+      - generic [ref=e22]:
+        - button "2" [ref=e23] [cursor=pointer]
+        - button "3" [ref=e24] [cursor=pointer]
+        - button "4" [ref=e25] [cursor=pointer]
+        - button "5" [ref=e26] [cursor=pointer]
+      - generic [ref=e27]:
+        - spinbutton [ref=e29]
+        - button "Подтвердить" [disabled] [ref=e30]
+  - button "Open Next.js Dev Tools" [ref=e36] [cursor=pointer]:
+    - img [ref=e37]
+  - alert [ref=e40]

@@ -49,32 +49,67 @@ export default function Home() {
   const currentIdx = steps.indexOf(step);
 
   return (
-    <div className="min-h-screen bg-[#050508] grid-bg relative flex flex-col items-center justify-center px-4 py-10">
-      {/* Ambient glow orbs */}
-      <div className="pointer-events-none fixed top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#ff2a6d]/5 blur-[120px]" />
-      <div className="pointer-events-none fixed bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#05d9e8]/5 blur-[120px]" />
+    <div className="min-h-screen bg-[#0a1628] relative flex flex-col items-center justify-center px-4 py-10 overflow-hidden">
+      {/* Background gradient orbs */}
+      <div className="pointer-events-none fixed top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-[#1e3a5f]/20 blur-[100px]" />
+      <div className="pointer-events-none fixed bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-[#d4af37]/5 blur-[120px]" />
+
+      {/* Floating confetti particles */}
+      {[...Array(12)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="pointer-events-none fixed"
+          style={{
+            left: `${10 + (i * 7) % 80}%`,
+            top: `${10 + (i * 13) % 70}%`,
+          }}
+          animate={{
+            y: [0, -30, 0],
+            rotate: [0, 360],
+            opacity: [0.2, 0.6, 0.2],
+          }}
+          transition={{
+            duration: 4 + (i % 3),
+            repeat: Infinity,
+            delay: i * 0.3,
+          }}
+        >
+          <div
+            className={`w-2 h-2 rounded-sm ${
+              i % 3 === 0
+                ? "bg-[#d4af37]"
+                : i % 3 === 1
+                ? "bg-[#c41e3a]"
+                : "bg-[#f0d878]"
+            }`}
+          />
+        </motion.div>
+      ))}
 
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -30 }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="mb-8 text-center relative z-10"
+        transition={{ duration: 0.8 }}
+        className="mb-10 text-center relative z-10"
       >
-        <h1 style={{ fontFamily: 'var(--font-display-family), sans-serif' }} className="text-4xl md:text-6xl tracking-wider text-[#e2e8f0] neon-text-pink">
-          РАНДОМАЙЗЕР
+        <h1
+          style={{ fontFamily: "var(--font-display), serif" }}
+          className="text-4xl md:text-6xl tracking-wide gold-text"
+        >
+          Рандомайзер
         </h1>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="mt-2 text-[#05d9e8] text-sm md:text-base font-body font-medium tracking-[0.3em] uppercase neon-text-cyan"
+          className="mt-2 text-[#a0aec0] text-base font-body font-medium tracking-[0.2em] uppercase"
         >
           Пусть удача решит за вас
         </motion.p>
       </motion.div>
 
-      {/* Progress bar — neon line */}
+      {/* Progress dots with gold line */}
       <div className="flex items-center gap-1 mb-10 relative z-10">
         {steps.map((s, i) => {
           const isActive = i <= currentIdx;
@@ -84,26 +119,21 @@ export default function Home() {
               <motion.div
                 initial={false}
                 animate={{
-                  backgroundColor: isActive ? "#ff2a6d" : "#1e1e2e",
-                  boxShadow: isActive
-                    ? "0 0 10px rgba(255, 42, 109, 0.5), 0 0 20px rgba(255, 42, 109, 0.2)"
-                    : "none",
                   scale: isCurrent ? 1.3 : 1,
                 }}
-                transition={{ duration: 0.4 }}
-                className="w-2.5 h-2.5 rounded-full"
+                className={`w-3 h-3 rounded-full ${
+                  isActive
+                    ? "bg-gradient-to-br from-[#f0d878] to-[#b8860b] shadow-[0_0_10px_rgba(212,175,55,0.5)]"
+                    : "bg-[#1a2d4a]"
+                }`}
               />
               {i < 3 && (
-                <motion.div
-                  initial={false}
-                  animate={{
-                    backgroundColor: i < currentIdx ? "#ff2a6d" : "#1e1e2e",
-                    boxShadow:
-                      i < currentIdx
-                        ? "0 0 6px rgba(255, 42, 109, 0.4)"
-                        : "none",
-                  }}
-                  className="w-10 h-[2px]"
+                <div
+                  className={`w-10 h-[2px] ${
+                    i < currentIdx
+                      ? "bg-gradient-to-r from-[#d4af37] to-[#b8860b]"
+                      : "bg-[#1a2d4a]"
+                  }`}
                 />
               )}
             </div>

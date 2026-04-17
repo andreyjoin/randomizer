@@ -64,11 +64,11 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
         setTimeout(() => onResult(labels[winIdx]), 700);
       }
     };
-    setTimeout(tick, 400);
+    setTimeout(tick, 500);
   }, [isSpinning, labels, onResult]);
 
   useEffect(() => {
-    const t = setTimeout(startSpin, 500);
+    const t = setTimeout(startSpin, 600);
     return () => clearTimeout(t);
   }, [startSpin]);
 
@@ -84,36 +84,36 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
       className="flex flex-col items-center gap-10 w-full max-w-sm relative z-10"
     >
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-body font-bold tracking-wide text-[#e2e8f0]">
-          УДАЧА РЕШАЕТ
+        <h2 className="text-2xl font-body font-bold tracking-wide text-[#faf8f3]">
+          Удача решает
         </h2>
         <p className="text-[#475569] text-xs tracking-wider uppercase">
           {isSpinning ? "Крутим..." : started ? "Готово!" : "Приготовьтесь"}
         </p>
       </div>
 
-      {/* Slot machine window */}
+      {/* Slot machine */}
       <div className="relative w-full">
-        {/* Top fade */}
-        <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#050508] to-transparent z-10 pointer-events-none rounded-t-2xl" />
-        {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#050508] to-transparent z-10 pointer-events-none rounded-b-2xl" />
+        {/* Top and bottom fades */}
+        <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0a1628] to-transparent z-10 pointer-events-none rounded-t-xl" />
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a1628] to-transparent z-10 pointer-events-none rounded-b-xl" />
 
-        <div className="h-80 bg-[#0e0e16] rounded-2xl border border-[#ff2a6d]/20 shadow-[0_0_40px_rgba(255,42,109,0.08),inset_0_0_40px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col items-center justify-center relative">
-          {/* Center highlight line */}
-          <div className="absolute top-1/2 left-3 right-3 -translate-y-1/2 h-20 bg-[#ff2a6d]/5 rounded-xl border border-[#ff2a6d]/10 pointer-events-none" />
+        {/* Main slot window with gold frame */}
+        <div className="h-80 rounded-2xl slot-frame overflow-hidden flex flex-col items-center justify-center relative">
+          {/* Metallic shine overlay */}
+          <div className="absolute inset-0 metallic pointer-events-none z-20" />
 
-          {/* Scanlines inside slot */}
-          <div className="absolute inset-0 pointer-events-none opacity-10 scanlines" />
+          {/* Center highlight strip */}
+          <div className="absolute top-1/2 left-2 right-2 -translate-y-1/2 h-20 bg-gradient-to-r from-transparent via-[#d4af37]/8 to-transparent rounded-xl border-y border-[#d4af37]/10 pointer-events-none z-10" />
 
-          <div className="flex flex-col items-center gap-3 w-full px-6">
+          <div className="flex flex-col items-center gap-3 w-full px-8">
             {/* Prev */}
             <motion.div
               animate={{
-                opacity: isSpinning ? 0.15 : 0.25,
+                opacity: isSpinning ? 0.2 : 0.3,
                 scale: isSpinning ? 0.8 : 0.85,
                 y: isSpinning ? -6 : 0,
-                filter: isSpinning ? "blur(3px)" : "blur(1px)",
+                filter: isSpinning ? "blur(4px)" : "blur(2px)",
               }}
               className="text-lg font-body font-medium text-[#475569] truncate w-full text-center"
             >
@@ -124,19 +124,18 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
             <motion.div
               key={currentIndex + (isSpinning ? "-spin" : "-stop")}
               animate={{
-                scale: isSpinning ? [1, 1.1, 1] : 1.2,
+                scale: isSpinning ? [1, 1.08, 1] : 1.15,
                 y: isSpinning ? [0, -3, 0] : 0,
-                filter: isSpinning ? "blur(0px)" : "blur(0px)",
               }}
               transition={
                 isSpinning
                   ? { duration: 0.12 }
                   : { type: "spring", stiffness: 200, damping: 15 }
               }
-              className={`text-3xl md:text-4xl font-mono font-bold truncate w-full text-center tracking-wide ${
+              className={`text-3xl md:text-4xl font-body font-bold truncate w-full text-center tracking-wide ${
                 winnerIndex === currentIndex && !isSpinning
-                  ? "text-[#ff2a6d] neon-text-pink"
-                  : "text-[#e2e8f0]"
+                  ? "gold-text"
+                  : "text-[#faf8f3]"
               }`}
             >
               {labels[currentIndex]}
@@ -145,10 +144,10 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
             {/* Next */}
             <motion.div
               animate={{
-                opacity: isSpinning ? 0.15 : 0.25,
+                opacity: isSpinning ? 0.2 : 0.3,
                 scale: isSpinning ? 0.8 : 0.85,
                 y: isSpinning ? 6 : 0,
-                filter: isSpinning ? "blur(3px)" : "blur(1px)",
+                filter: isSpinning ? "blur(4px)" : "blur(2px)",
               }}
               className="text-lg font-body font-medium text-[#475569] truncate w-full text-center"
             >
@@ -157,12 +156,18 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
           </div>
         </div>
 
-        {/* Decorative side bolts */}
-        <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#1e1e2e] border border-[#ff2a6d]/20 flex items-center justify-center">
-          <div className="w-2 h-2 rounded-full bg-[#ff2a6d]/40" />
+        {/* Decorative corner gems */}
+        <div className="absolute -top-2 -left-2 w-5 h-5">
+          <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
         </div>
-        <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#1e1e2e] border border-[#ff2a6d]/20 flex items-center justify-center">
-          <div className="w-2 h-2 rounded-full bg-[#ff2a6d]/40" />
+        <div className="absolute -top-2 -right-2 w-5 h-5">
+          <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
+        </div>
+        <div className="absolute -bottom-2 -left-2 w-5 h-5">
+          <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
+        </div>
+        <div className="absolute -bottom-2 -right-2 w-5 h-5">
+          <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
         </div>
       </div>
 
@@ -173,10 +178,10 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
             key={i}
             animate={{
               scale: currentIndex === i ? 1.5 : 1,
-              backgroundColor: currentIndex === i ? "#ff2a6d" : "#1e1e2e",
+              backgroundColor: currentIndex === i ? "#d4af37" : "#1a2d4a",
               boxShadow:
                 currentIndex === i
-                  ? "0 0 10px rgba(255, 42, 109, 0.6)"
+                  ? "0 0 12px rgba(212, 175, 55, 0.6)"
                   : "none",
             }}
             className="w-2 h-2 rounded-full"

@@ -23,7 +23,7 @@ export default function ResultStep({ winner, onSpinAgain, onRestart }: ResultSte
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-[#05d9e8] text-xs font-body font-semibold uppercase tracking-[0.4em] neon-text-cyan"
+          className="text-[#d4af37] text-xs font-body font-semibold uppercase tracking-[0.4em]"
         >
           Победитель
         </motion.p>
@@ -35,51 +35,52 @@ export default function ResultStep({ winner, onSpinAgain, onRestart }: ResultSte
         transition={{ type: "spring", stiffness: 180, damping: 12, delay: 0.1 }}
         className="relative"
       >
-        {/* Outer glow ring */}
+        {/* Outer glow */}
         <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.15, 0.4] }}
+          animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.2, 0.5] }}
           transition={{ duration: 2.5, repeat: Infinity }}
-          className="absolute inset-0 rounded-full bg-[#ff2a6d] blur-3xl"
-        />
-        {/* Secondary cyan glow */}
-        <motion.div
-          animate={{ scale: [1.1, 1, 1.1], opacity: [0.2, 0.35, 0.2] }}
-          transition={{ duration: 3, repeat: Infinity }}
-          className="absolute inset-0 rounded-full bg-[#05d9e8] blur-3xl"
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-[#d4af37] to-[#f0d878] blur-3xl"
         />
 
-        <div className="relative w-60 h-60 md:w-72 md:h-72 rounded-full bg-[#0e0e16] border-2 border-[#ff2a6d]/30 shadow-[0_0_60px_rgba(255,42,109,0.15),inset_0_0_60px_rgba(0,0,0,0.5)] flex items-center justify-center px-8">
-          {/* Inner ring */}
-          <div className="absolute inset-3 rounded-full border border-[#ff2a6d]/10" />
+        {/* Winner circle */}
+        <div className="relative w-60 h-60 md:w-72 md:h-72 rounded-full bg-gradient-to-br from-[#1a2d4a] to-[#111d32] gold-border animate-winner-pulse flex items-center justify-center px-8">
+          {/* Inner decorative ring */}
+          <div className="absolute inset-4 rounded-full border border-[#d4af37]/20" />
+          <div className="absolute inset-8 rounded-full border border-dashed border-[#d4af37]/10" />
 
           <motion.h3
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="text-2xl md:text-3xl font-mono font-bold text-[#e2e8f0] text-center leading-tight break-words neon-text-pink"
+            style={{ fontFamily: "var(--font-display), serif" }}
+            className="text-2xl md:text-3xl font-bold text-[#faf8f3] text-center leading-tight break-words gold-text"
           >
             {winner}
           </motion.h3>
         </div>
 
-        {/* Floating particles */}
-        {[...Array(8)].map((_, i) => (
+        {/* Floating particles - gold and red */}
+        {[...Array(10)].map((_, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, scale: 0 }}
             animate={{
               opacity: [0, 1, 0],
-              scale: [0, 1.2, 0],
-              x: Math.cos((i * Math.PI) / 4) * 110,
-              y: Math.sin((i * Math.PI) / 4) * 110 - 25,
+              scale: [0, 1, 0],
+              x: Math.cos((i * Math.PI * 2) / 10) * 130,
+              y: Math.sin((i * Math.PI * 2) / 10) * 130 - 30,
             }}
             transition={{
-              duration: 1.2,
-              delay: 0.2 + i * 0.06,
+              duration: 1.5,
+              delay: 0.15 + i * 0.07,
               ease: "easeOut",
             }}
-            className={`absolute top-1/2 left-1/2 w-2.5 h-2.5 rounded-full ${
-              i % 2 === 0 ? "bg-[#ff2a6d]" : "bg-[#05d9e8]"
+            className={`absolute top-1/2 left-1/2 w-3 h-3 rounded-full ${
+              i % 3 === 0
+                ? "bg-[#d4af37]"
+                : i % 3 === 1
+                ? "bg-[#f0d878]"
+                : "bg-[#c41e3a]"
             }`}
           />
         ))}
@@ -87,10 +88,10 @@ export default function ResultStep({ winner, onSpinAgain, onRestart }: ResultSte
 
       <div className="flex gap-3 w-full">
         <motion.button
-          whileHover={{ scale: 1.03 }}
+          whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
           onClick={onSpinAgain}
-          className="flex-1 h-14 rounded-xl bg-[#ff2a6d] text-[#050508] font-body font-bold text-base tracking-wider shadow-[0_0_25px_rgba(255,42,109,0.3)] hover:shadow-[0_0_50px_rgba(255,42,109,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer uppercase"
+          className="flex-1 h-14 rounded-xl gold-button text-[#0a1628] font-body font-bold text-base tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer uppercase"
         >
           <Play className="w-5 h-5" />
           Крутить
@@ -99,7 +100,7 @@ export default function ResultStep({ winner, onSpinAgain, onRestart }: ResultSte
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={onRestart}
-          className="flex-1 h-14 rounded-xl border border-[#1e1e2e] text-[#475569] font-body font-semibold tracking-wider hover:border-[#05d9e8]/30 hover:text-[#05d9e8] hover:shadow-[0_0_20px_rgba(5,217,232,0.1)] transition-all flex items-center justify-center gap-2 cursor-pointer uppercase"
+          className="flex-1 h-14 rounded-xl border border-[#1a2d4a] bg-gradient-to-br from-[#1a2d4a] to-[#111d32] text-[#a0aec0] font-body font-semibold tracking-wider hover:border-[#d4af37]/30 hover:text-[#faf8f3] transition-all flex items-center justify-center gap-2 cursor-pointer uppercase"
         >
           <RotateCcw className="w-5 h-5" />
           Заново

@@ -7,148 +7,125 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-body);
-  --font-mono: var(--font-mono);
   --font-body: var(--font-body);
-  --font-display: var(--font-display-family);
-  --color-neon-pink: #ff2a6d;
-  --color-neon-cyan: #05d9e8;
-  --color-neon-purple: #b026ff;
-  --color-dark-base: #050508;
-  --color-dark-surface: #0e0e16;
-  --color-dark-elevated: #151520;
-  --color-text-primary: #e2e8f0;
-  --color-text-secondary: #94a3b8;
+  --font-display: var(--font-display);
+  --color-gold: #d4af37;
+  --color-gold-light: #f0d878;
+  --color-gold-dark: #8a6d1b;
+  --color-casino-red: #c41e3a;
+  --color-casino-blue: #0a1628;
+  --color-casino-surface: #111d32;
+  --color-casino-elevated: #1a2d4a;
+  --color-text-primary: #faf8f3;
+  --color-text-secondary: #a0aec0;
   --color-text-muted: #475569;
-  --color-border-subtle: rgba(255, 255, 255, 0.06);
-  --color-border-glow: rgba(255, 42, 109, 0.3);
 }
 
 :root {
-  --background: #050508;
-  --foreground: #e2e8f0;
-  --radius: 0.5rem;
+  --background: #0a1628;
+  --foreground: #faf8f3;
+  --radius: 0.75rem;
 }
 
 @layer base {
   * {
-    @apply border-border-subtle;
+    @apply border-white/10;
   }
   body {
-    @apply bg-dark-base text-text-primary;
+    @apply bg-casino-blue text-text-primary;
   }
   html {
     @apply font-body;
   }
 }
 
-/* Scanlines effect */
-.scanlines {
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.15) 2px,
-    rgba(0, 0, 0, 0.15) 4px
+/* Gold gradient text */
+.gold-text {
+  background: linear-gradient(135deg, #f0d878 0%, #d4af37 50%, #b8860b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gold gradient border */
+.gold-border {
+  border: 2px solid transparent;
+  background: linear-gradient(#111d32, #111d32) padding-box,
+    linear-gradient(135deg, #f0d878, #d4af37, #8a6d1b) border-box;
+}
+
+/* Gold button gradient */
+.gold-button {
+  background: linear-gradient(135deg, #f0d878 0%, #d4af37 50%, #b8860b 100%);
+  box-shadow:
+    0 4px 15px rgba(212, 175, 55, 0.3),
+    0 0 0 1px rgba(240, 216, 120, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.gold-button:hover {
+  box-shadow:
+    0 6px 25px rgba(212, 175, 55, 0.5),
+    0 0 0 1px rgba(240, 216, 120, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Shiny metallic effect */
+.metallic {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.2) 100%
   );
-  background-size: 100% 4px;
 }
 
-/* Vignette */
-.bg-radial-vignette {
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    transparent 50%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
-}
-
-/* Neon glow utilities */
-.neon-text-pink {
-  text-shadow:
-    0 0 5px rgba(255, 42, 109, 0.5),
-    0 0 20px rgba(255, 42, 109, 0.3),
-    0 0 40px rgba(255, 42, 109, 0.1);
-}
-
-.neon-text-cyan {
-  text-shadow:
-    0 0 5px rgba(5, 217, 232, 0.5),
-    0 0 20px rgba(5, 217, 232, 0.3),
-    0 0 40px rgba(5, 217, 232, 0.1);
-}
-
-.neon-box-pink {
+/* Deep shadow for casino feel */
+.casino-shadow {
   box-shadow:
-    0 0 5px rgba(255, 42, 109, 0.3),
-    0 0 20px rgba(255, 42, 109, 0.15),
-    inset 0 0 10px rgba(255, 42, 109, 0.05);
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(212, 175, 55, 0.1);
 }
 
-.neon-box-cyan {
+/* Slot machine frame */
+.slot-frame {
+  background: linear-gradient(145deg, #1a2d4a 0%, #111d32 100%);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  border-image: linear-gradient(135deg, #f0d878, #d4af37, #8a6d1b) 1;
   box-shadow:
-    0 0 5px rgba(5, 217, 232, 0.3),
-    0 0 20px rgba(5, 217, 232, 0.15),
-    inset 0 0 10px rgba(5, 217, 232, 0.05);
+    0 0 30px rgba(212, 175, 55, 0.15),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
 }
 
-.neon-border-pink {
-  border-color: rgba(255, 42, 109, 0.4);
-  box-shadow:
-    0 0 5px rgba(255, 42, 109, 0.2),
-    inset 0 0 10px rgba(255, 42, 109, 0.05);
+/* Confetti-like floating particles */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+  50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
 }
 
-.neon-border-cyan {
-  border-color: rgba(5, 217, 232, 0.4);
-  box-shadow:
-    0 0 5px rgba(5, 217, 232, 0.2),
-    inset 0 0 10px rgba(5, 217, 232, 0.05);
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
-/* Grid background pattern */
-.grid-bg {
-  background-image:
-    linear-gradient(rgba(255, 42, 109, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 42, 109, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
+/* Pulse glow for winner */
+@keyframes winner-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); }
+  50% { box-shadow: 0 0 60px rgba(212, 175, 55, 0.6), 0 0 100px rgba(212, 175, 55, 0.2); }
 }
 
-/* Glitch keyframes */
-@keyframes glitch {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  100% { transform: translate(0); }
+.animate-winner-pulse {
+  animation: winner-pulse 2s ease-in-out infinite;
 }
 
-.animate-glitch {
-  animation: glitch 0.3s ease-in-out;
-}
-
-/* Pulse glow */
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-/* Scrollbar styling */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0e0e16;
+  background: #0a1628;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 42, 109, 0.3);
+  background: linear-gradient(180deg, #d4af37, #8a6d1b);
   border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 42, 109, 0.5);
 }

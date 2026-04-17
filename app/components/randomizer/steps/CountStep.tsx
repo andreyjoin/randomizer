@@ -32,8 +32,8 @@ export default function CountStep({ onSelect }: CountStepProps) {
       className="flex flex-col items-center gap-10 w-full max-w-lg relative z-10"
     >
       <div className="text-center space-y-3">
-        <h2 className="text-2xl md:text-3xl font-body font-bold tracking-wide text-[#e2e8f0]">
-          СКОЛЬКО ВАРИАНТОВ?
+        <h2 className="text-2xl md:text-3xl font-body font-bold tracking-wide text-[#faf8f3]">
+          Сколько вариантов?
         </h2>
         <p className="text-[#475569] text-sm tracking-wider uppercase">
           Выберите количество или введите своё
@@ -44,10 +44,10 @@ export default function CountStep({ onSelect }: CountStepProps) {
         {PRESETS.map((n) => (
           <motion.button
             key={n}
-            whileHover={{ scale: 1.12 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.1, y: -2 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => onSelect(n)}
-            className="w-20 h-20 rounded-full bg-[#0e0e16] border border-[#ff2a6d]/30 text-[#ff2a6d] text-3xl font-mono font-bold neon-box-pink hover:border-[#ff2a6d] hover:shadow-[0_0_30px_rgba(255,42,109,0.3)] transition-all duration-300 cursor-pointer flex items-center justify-center"
+            className="w-20 h-20 rounded-full bg-gradient-to-br from-[#1a2d4a] to-[#111d32] gold-border text-[#f0d878] text-3xl font-body font-bold shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_8px_40px_rgba(212,175,55,0.25)] transition-all duration-300 cursor-pointer flex items-center justify-center"
           >
             {n}
           </motion.button>
@@ -66,20 +66,20 @@ export default function CountStep({ onSelect }: CountStepProps) {
               setError(false);
             }}
             onKeyDown={(e) => e.key === "Enter" && handleCustom()}
-            placeholder="ВВЕДИТЕ СВОЁ"
-            className={`w-full h-14 px-5 rounded-xl border bg-[#0e0e16] text-[#e2e8f0] placeholder:text-[#475569] text-center text-lg font-body tracking-wider outline-none transition-all duration-300 ${
+            placeholder="Введите своё"
+            className={`w-full h-14 px-5 rounded-xl bg-gradient-to-br from-[#1a2d4a] to-[#111d32] text-[#faf8f3] placeholder:text-[#475569] text-center text-lg font-body tracking-wider outline-none transition-all duration-300 border ${
               error
-                ? "border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)] animate-pulse"
-                : "border-[#05d9e8]/20 focus:border-[#05d9e8] focus:shadow-[0_0_20px_rgba(5,217,232,0.2)]"
+                ? "border-[#c41e3a] shadow-[0_0_20px_rgba(196,30,58,0.3)] animate-pulse"
+                : "border-[#d4af37]/20 focus:border-[#d4af37]/60 focus:shadow-[0_0_20px_rgba(212,175,55,0.15)]"
             }`}
           />
         </div>
         <motion.button
-          whileHover={{ scale: 1.03 }}
+          whileHover={{ scale: 1.03, y: -1 }}
           whileTap={{ scale: 0.97 }}
           onClick={handleCustom}
           disabled={!custom}
-          className="w-full h-12 rounded-xl bg-[#ff2a6d] text-[#050508] font-body font-bold text-base tracking-wider shadow-[0_0_20px_rgba(255,42,109,0.3)] hover:shadow-[0_0_40px_rgba(255,42,109,0.5)] disabled:opacity-30 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 cursor-pointer uppercase"
+          className="w-full h-13 py-3 rounded-xl gold-button text-[#0a1628] font-body font-bold text-base tracking-wider disabled:opacity-30 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 cursor-pointer uppercase"
         >
           Подтвердить
         </motion.button>
