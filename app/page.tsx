@@ -45,44 +45,65 @@ export default function Home() {
     setStep("count");
   };
 
+  const steps = ["count", "labels", "spin", "result"] as Step[];
+  const currentIdx = steps.indexOf(step);
+
   return (
-    <div className="min-h-screen bg-[#faf8f3] flex flex-col items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-[#050508] grid-bg relative flex flex-col items-center justify-center px-4 py-10">
+      {/* Ambient glow orbs */}
+      <div className="pointer-events-none fixed top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#ff2a6d]/5 blur-[120px]" />
+      <div className="pointer-events-none fixed bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#05d9e8]/5 blur-[120px]" />
+
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-12 text-center"
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="mb-8 text-center relative z-10"
       >
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[#1a1a2e]">
-          Рандомайзер
+        <h1 style={{ fontFamily: 'var(--font-display-family), sans-serif' }} className="text-4xl md:text-6xl tracking-wider text-[#e2e8f0] neon-text-pink">
+          РАНДОМАЙЗЕР
         </h1>
-        <p className="mt-2 text-[#8a8a9a] text-sm font-medium">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-2 text-[#05d9e8] text-sm md:text-base font-body font-medium tracking-[0.3em] uppercase neon-text-cyan"
+        >
           Пусть удача решит за вас
-        </p>
+        </motion.p>
       </motion.div>
 
-      {/* Progress bar */}
-      <div className="flex items-center gap-2 mb-10">
-        {(["count", "labels", "spin", "result"] as Step[]).map((s, i) => {
-          const steps = ["count", "labels", "spin", "result"];
-          const currentIdx = steps.indexOf(step);
+      {/* Progress bar — neon line */}
+      <div className="flex items-center gap-1 mb-10 relative z-10">
+        {steps.map((s, i) => {
           const isActive = i <= currentIdx;
           const isCurrent = s === step;
           return (
-            <div key={s} className="flex items-center gap-2">
+            <div key={s} className="flex items-center gap-1">
               <motion.div
+                initial={false}
                 animate={{
-                  backgroundColor: isActive ? "#e85d4e" : "#e0e0e0",
-                  scale: isCurrent ? 1.2 : 1,
+                  backgroundColor: isActive ? "#ff2a6d" : "#1e1e2e",
+                  boxShadow: isActive
+                    ? "0 0 10px rgba(255, 42, 109, 0.5), 0 0 20px rgba(255, 42, 109, 0.2)"
+                    : "none",
+                  scale: isCurrent ? 1.3 : 1,
                 }}
-                className="w-3 h-3 rounded-full"
+                transition={{ duration: 0.4 }}
+                className="w-2.5 h-2.5 rounded-full"
               />
               {i < 3 && (
-                <div
-                  className={`w-8 h-0.5 rounded-full transition-colors duration-500 ${
-                    i < currentIdx ? "bg-[#e85d4e]" : "bg-[#e0e0e0]"
-                  }`}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    backgroundColor: i < currentIdx ? "#ff2a6d" : "#1e1e2e",
+                    boxShadow:
+                      i < currentIdx
+                        ? "0 0 6px rgba(255, 42, 109, 0.4)"
+                        : "none",
+                  }}
+                  className="w-10 h-[2px]"
                 />
               )}
             </div>

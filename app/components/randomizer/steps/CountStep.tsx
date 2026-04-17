@@ -29,13 +29,13 @@ export default function CountStep({ onSelect }: CountStepProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="flex flex-col items-center gap-10 w-full max-w-lg"
+      className="flex flex-col items-center gap-10 w-full max-w-lg relative z-10"
     >
       <div className="text-center space-y-3">
-        <h2 className="text-3xl font-bold tracking-tight text-[#1a1a2e]">
-          Сколько вариантов?
+        <h2 className="text-2xl md:text-3xl font-body font-bold tracking-wide text-[#e2e8f0]">
+          СКОЛЬКО ВАРИАНТОВ?
         </h2>
-        <p className="text-[#6b6b7b] text-base">
+        <p className="text-[#475569] text-sm tracking-wider uppercase">
           Выберите количество или введите своё
         </p>
       </div>
@@ -44,17 +44,17 @@ export default function CountStep({ onSelect }: CountStepProps) {
         {PRESETS.map((n) => (
           <motion.button
             key={n}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.92 }}
+            whileHover={{ scale: 1.12 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => onSelect(n)}
-            className="w-20 h-20 rounded-full bg-white border-2 border-[#e85d4e]/20 text-[#e85d4e] text-2xl font-bold shadow-sm hover:shadow-lg hover:border-[#e85d4e] transition-all duration-300 cursor-pointer flex items-center justify-center"
+            className="w-20 h-20 rounded-full bg-[#0e0e16] border border-[#ff2a6d]/30 text-[#ff2a6d] text-3xl font-mono font-bold neon-box-pink hover:border-[#ff2a6d] hover:shadow-[0_0_30px_rgba(255,42,109,0.3)] transition-all duration-300 cursor-pointer flex items-center justify-center"
           >
             {n}
           </motion.button>
         ))}
       </div>
 
-      <div className="w-full max-w-xs space-y-3">
+      <div className="w-full max-w-xs space-y-4">
         <div className="relative">
           <input
             type="number"
@@ -66,11 +66,11 @@ export default function CountStep({ onSelect }: CountStepProps) {
               setError(false);
             }}
             onKeyDown={(e) => e.key === "Enter" && handleCustom()}
-            placeholder="Введите своё количество"
-            className={`w-full h-14 px-5 rounded-2xl border-2 bg-white text-[#1a1a2e] placeholder:text-[#a0a0b0] text-center text-lg outline-none transition-all duration-300 ${
+            placeholder="ВВЕДИТЕ СВОЁ"
+            className={`w-full h-14 px-5 rounded-xl border bg-[#0e0e16] text-[#e2e8f0] placeholder:text-[#475569] text-center text-lg font-body tracking-wider outline-none transition-all duration-300 ${
               error
-                ? "border-red-400 animate-pulse"
-                : "border-[#e85d4e]/20 focus:border-[#e85d4e] focus:shadow-md"
+                ? "border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)] animate-pulse"
+                : "border-[#05d9e8]/20 focus:border-[#05d9e8] focus:shadow-[0_0_20px_rgba(5,217,232,0.2)]"
             }`}
           />
         </div>
@@ -79,7 +79,7 @@ export default function CountStep({ onSelect }: CountStepProps) {
           whileTap={{ scale: 0.97 }}
           onClick={handleCustom}
           disabled={!custom}
-          className="w-full h-12 rounded-xl bg-[#e85d4e] text-white font-semibold text-base shadow-md hover:shadow-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 cursor-pointer"
+          className="w-full h-12 rounded-xl bg-[#ff2a6d] text-[#050508] font-body font-bold text-base tracking-wider shadow-[0_0_20px_rgba(255,42,109,0.3)] hover:shadow-[0_0_40px_rgba(255,42,109,0.5)] disabled:opacity-30 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 cursor-pointer uppercase"
         >
           Подтвердить
         </motion.button>

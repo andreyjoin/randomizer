@@ -1,0 +1,18 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Рандомайзер" [level=1] [ref=e4]
+      - paragraph [ref=e5]: Пусть удача решит за вас
+    - generic [ref=e68]:
+      - paragraph [ref=e70]: Победитель
+      - heading "Вариант 2" [level=3] [ref=e74]
+      - generic [ref=e80]:
+        - button "Крутить ещё" [ref=e81] [cursor=pointer]:
+          - img [ref=e82]
+          - text: Крутить ещё
+        - button "Заново" [ref=e84] [cursor=pointer]:
+          - img [ref=e85]
+          - text: Заново
+  - button "Open Next.js Dev Tools" [ref=e36] [cursor=pointer]:
+    - img [ref=e37]
+  - alert [ref=e40]

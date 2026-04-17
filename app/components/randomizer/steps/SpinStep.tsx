@@ -10,7 +10,7 @@ interface SpinStepProps {
 
 function generateSequence(labels: string[], winnerIndex: number): number[] {
   const len = labels.length;
-  const totalSpins = 45 + Math.floor(Math.random() * 15);
+  const totalSpins = 50 + Math.floor(Math.random() * 15);
   const seq: number[] = [];
   for (let i = 0; i < totalSpins; i++) {
     if (i === totalSpins - 1) {
@@ -28,14 +28,13 @@ function generateSequence(labels: string[], winnerIndex: number): number[] {
 
 function delayForIndex(index: number, total: number): number {
   const progress = index / total;
-  // ease-in-out curve: start slow, speed up, slow down
-  if (progress < 0.15) {
-    return 180 - progress * 600;
-  } else if (progress < 0.7) {
-    return 90 - (progress - 0.15) * 40;
+  if (progress < 0.12) {
+    return 200 - progress * 800;
+  } else if (progress < 0.65) {
+    return 80 - (progress - 0.12) * 30;
   } else {
-    const slowdown = (progress - 0.7) / 0.3;
-    return 68 + slowdown * slowdown * 380;
+    const slowdown = (progress - 0.65) / 0.35;
+    return 65 + slowdown * slowdown * 420;
   }
 }
 
@@ -62,14 +61,14 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
       } else {
         setIsSpinning(false);
         setWinnerIndex(winIdx);
-        setTimeout(() => onResult(labels[winIdx]), 600);
+        setTimeout(() => onResult(labels[winIdx]), 700);
       }
     };
-    setTimeout(tick, 300);
+    setTimeout(tick, 400);
   }, [isSpinning, labels, onResult]);
 
   useEffect(() => {
-    const t = setTimeout(startSpin, 400);
+    const t = setTimeout(startSpin, 500);
     return () => clearTimeout(t);
   }, [startSpin]);
 
@@ -82,11 +81,13 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col items-center gap-10 w-full max-w-sm"
+      className="flex flex-col items-center gap-10 w-full max-w-sm relative z-10"
     >
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold text-[#1a1a2e]">Удача решает</h2>
-        <p className="text-[#6b6b7b] text-sm">
+        <h2 className="text-2xl font-body font-bold tracking-wide text-[#e2e8f0]">
+          УДАЧА РЕШАЕТ
+        </h2>
+        <p className="text-[#475569] text-xs tracking-wider uppercase">
           {isSpinning ? "Крутим..." : started ? "Готово!" : "Приготовьтесь"}
         </p>
       </div>
@@ -94,23 +95,27 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
       {/* Slot machine window */}
       <div className="relative w-full">
         {/* Top fade */}
-        <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#faf8f3] to-transparent z-10 pointer-events-none rounded-t-3xl" />
+        <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#050508] to-transparent z-10 pointer-events-none rounded-t-2xl" />
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#faf8f3] to-transparent z-10 pointer-events-none rounded-b-3xl" />
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#050508] to-transparent z-10 pointer-events-none rounded-b-2xl" />
 
-        <div className="h-72 bg-white rounded-3xl border-2 border-[#e0e0e0] shadow-inner overflow-hidden flex flex-col items-center justify-center relative">
+        <div className="h-80 bg-[#0e0e16] rounded-2xl border border-[#ff2a6d]/20 shadow-[0_0_40px_rgba(255,42,109,0.08),inset_0_0_40px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col items-center justify-center relative">
           {/* Center highlight line */}
-          <div className="absolute top-1/2 left-2 right-2 -translate-y-1/2 h-16 bg-[#e85d4e]/5 rounded-xl border border-[#e85d4e]/10 pointer-events-none" />
+          <div className="absolute top-1/2 left-3 right-3 -translate-y-1/2 h-20 bg-[#ff2a6d]/5 rounded-xl border border-[#ff2a6d]/10 pointer-events-none" />
 
-          <div className="flex flex-col items-center gap-2 w-full px-6">
+          {/* Scanlines inside slot */}
+          <div className="absolute inset-0 pointer-events-none opacity-10 scanlines" />
+
+          <div className="flex flex-col items-center gap-3 w-full px-6">
             {/* Prev */}
             <motion.div
               animate={{
-                opacity: isSpinning ? 0.25 : 0.35,
-                scale: isSpinning ? 0.85 : 0.9,
-                y: isSpinning ? -4 : 0,
+                opacity: isSpinning ? 0.15 : 0.25,
+                scale: isSpinning ? 0.8 : 0.85,
+                y: isSpinning ? -6 : 0,
+                filter: isSpinning ? "blur(3px)" : "blur(1px)",
               }}
-              className="text-xl font-medium text-[#a0a0b0] truncate w-full text-center"
+              className="text-lg font-body font-medium text-[#475569] truncate w-full text-center"
             >
               {labels[prevIndex]}
             </motion.div>
@@ -119,18 +124,19 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
             <motion.div
               key={currentIndex + (isSpinning ? "-spin" : "-stop")}
               animate={{
-                scale: isSpinning ? [1, 1.08, 1] : 1.15,
-                y: isSpinning ? [0, -2, 0] : 0,
+                scale: isSpinning ? [1, 1.1, 1] : 1.2,
+                y: isSpinning ? [0, -3, 0] : 0,
+                filter: isSpinning ? "blur(0px)" : "blur(0px)",
               }}
               transition={
                 isSpinning
-                  ? { duration: 0.15 }
+                  ? { duration: 0.12 }
                   : { type: "spring", stiffness: 200, damping: 15 }
               }
-              className={`text-3xl font-bold truncate w-full text-center ${
+              className={`text-3xl md:text-4xl font-mono font-bold truncate w-full text-center tracking-wide ${
                 winnerIndex === currentIndex && !isSpinning
-                  ? "text-[#e85d4e]"
-                  : "text-[#1a1a2e]"
+                  ? "text-[#ff2a6d] neon-text-pink"
+                  : "text-[#e2e8f0]"
               }`}
             >
               {labels[currentIndex]}
@@ -139,33 +145,41 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
             {/* Next */}
             <motion.div
               animate={{
-                opacity: isSpinning ? 0.25 : 0.35,
-                scale: isSpinning ? 0.85 : 0.9,
-                y: isSpinning ? 4 : 0,
+                opacity: isSpinning ? 0.15 : 0.25,
+                scale: isSpinning ? 0.8 : 0.85,
+                y: isSpinning ? 6 : 0,
+                filter: isSpinning ? "blur(3px)" : "blur(1px)",
               }}
-              className="text-xl font-medium text-[#a0a0b0] truncate w-full text-center"
+              className="text-lg font-body font-medium text-[#475569] truncate w-full text-center"
             >
               {labels[nextIndex]}
             </motion.div>
           </div>
         </div>
 
-        {/* Decorative side dots */}
-        <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#e0e0e0] border-4 border-[#faf8f3]" />
-        <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#e0e0e0] border-4 border-[#faf8f3]" />
+        {/* Decorative side bolts */}
+        <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#1e1e2e] border border-[#ff2a6d]/20 flex items-center justify-center">
+          <div className="w-2 h-2 rounded-full bg-[#ff2a6d]/40" />
+        </div>
+        <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#1e1e2e] border border-[#ff2a6d]/20 flex items-center justify-center">
+          <div className="w-2 h-2 rounded-full bg-[#ff2a6d]/40" />
+        </div>
       </div>
 
       {/* Progress dots */}
-      <div className="flex gap-2">
-        {labels.slice(0, Math.min(labels.length, 8)).map((_, i) => (
+      <div className="flex gap-2 flex-wrap justify-center max-w-xs">
+        {labels.slice(0, Math.min(labels.length, 12)).map((_, i) => (
           <motion.div
             key={i}
             animate={{
-              scale: currentIndex === i ? 1.4 : 1,
-              backgroundColor:
-                currentIndex === i ? "#e85d4e" : "#e0e0e0",
+              scale: currentIndex === i ? 1.5 : 1,
+              backgroundColor: currentIndex === i ? "#ff2a6d" : "#1e1e2e",
+              boxShadow:
+                currentIndex === i
+                  ? "0 0 10px rgba(255, 42, 109, 0.6)"
+                  : "none",
             }}
-            className="w-2.5 h-2.5 rounded-full"
+            className="w-2 h-2 rounded-full"
           />
         ))}
       </div>
