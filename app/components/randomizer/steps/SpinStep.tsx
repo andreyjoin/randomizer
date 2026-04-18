@@ -38,11 +38,27 @@ function delayForIndex(index: number, total: number): number {
   }
 }
 
+// 3D reel: each item positioned on a virtual cylinder
+const REEL_ITEMS = [
+  { offset: -3, rotX: 40, y: -118, scale: 0.6, opacity: 0.4, z: -100 },
+  { offset: -2, rotX: 26, y: -80, scale: 0.78, opacity: 0.65, z: -55 },
+  { offset: -1, rotX: 12, y: -40, scale: 0.95, opacity: 0.9, z: -20 },
+  { offset: 0, rotX: 0, y: 0, scale: 1.25, opacity: 1, z: 20 },
+  { offset: 1, rotX: -12, y: 40, scale: 0.95, opacity: 0.9, z: -20 },
+  { offset: 2, rotX: -26, y: 80, scale: 0.78, opacity: 0.65, z: -55 },
+  { offset: 3, rotX: -40, y: 118, scale: 0.6, opacity: 0.4, z: -100 },
+];
+
+function wrapIndex(idx: number, total: number) {
+  return ((idx % total) + total) % total;
+}
+
 export default function SpinStep({ labels, onResult }: SpinStepProps) {
   const [started, setStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [winnerIndex, setWinnerIndex] = useState<number | null>(null);
+  const [flash, setFlash] = useState(false);
 
   const startSpin = useCallback(() => {
     if (isSpinning) return;
@@ -61,7 +77,9 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
       } else {
         setIsSpinning(false);
         setWinnerIndex(winIdx);
-        setTimeout(() => onResult(labels[winIdx]), 700);
+        setFlash(true);
+        setTimeout(() => setFlash(false), 400);
+        setTimeout(() => onResult(labels[winIdx]), 900);
       }
     };
     setTimeout(tick, 500);
@@ -72,16 +90,13 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
     return () => clearTimeout(t);
   }, [startSpin]);
 
-  const prevIndex = (currentIndex - 1 + labels.length) % labels.length;
-  const nextIndex = (currentIndex + 1) % labels.length;
-
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
       transition={{ duration: 0.5 }}
-      className="flex flex-col items-center gap-10 w-full max-w-sm relative z-10"
+      className="flex flex-col items-center gap-10 w-full max-w-md relative z-10"
     >
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-body font-bold tracking-wide text-[#faf8f3]">
@@ -93,82 +108,106 @@ export default function SpinStep({ labels, onResult }: SpinStepProps) {
       </div>
 
       {/* Slot machine */}
-      <div className="relative w-full">
-        {/* Top and bottom fades */}
-        <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0a1628] to-transparent z-10 pointer-events-none rounded-t-xl" />
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a1628] to-transparent z-10 pointer-events-none rounded-b-xl" />
+      <div className="relative w-full" style={{ perspective: "550px" }}>
+        {/* Soft top/bottom fades */}
+        <div className="absolute -top-1 left-0 right-0 h-12 bg-gradient-to-b from-[#0a1628] via-[#0a1628]/40 to-transparent z-30 pointer-events-none" />
+        <div className="absolute -bottom-1 left-0 right-0 h-12 bg-gradient-to-t from-[#0a1628] via-[#0a1628]/40 to-transparent z-30 pointer-events-none" />
 
-        {/* Main slot window with gold frame */}
-        <div className="h-80 rounded-2xl slot-frame overflow-hidden flex flex-col items-center justify-center relative">
-          {/* Metallic shine overlay */}
+        {/* Frame */}
+        <div
+          className="h-[420px] rounded-2xl slot-frame relative overflow-hidden"
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          {/* Metallic shine */}
           <div className="absolute inset-0 metallic pointer-events-none z-20" />
 
-          {/* Center highlight strip */}
-          <div className="absolute top-1/2 left-2 right-2 -translate-y-1/2 h-20 bg-gradient-to-r from-transparent via-[#d4af37]/8 to-transparent rounded-xl border-y border-[#d4af37]/10 pointer-events-none z-10" />
+          {/* Center highlight */}
+          <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-[72px] bg-gradient-to-r from-transparent via-[#d4af37]/15 to-transparent border-y border-[#d4af37]/25 pointer-events-none z-10" />
 
-          <div className="flex flex-col items-center gap-3 w-full px-8">
-            {/* Prev */}
+          {/* Flash on win */}
+          {flash && (
             <motion.div
-              animate={{
-                opacity: isSpinning ? 0.2 : 0.3,
-                scale: isSpinning ? 0.8 : 0.85,
-                y: isSpinning ? -6 : 0,
-                filter: isSpinning ? "blur(4px)" : "blur(2px)",
-              }}
-              className="text-lg font-body font-medium text-[#475569] truncate w-full text-center"
-            >
-              {labels[prevIndex]}
-            </motion.div>
+              initial={{ opacity: 0.6 }}
+              animate={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 bg-[#d4af37]/20 z-40 pointer-events-none"
+            />
+          )}
 
-            {/* Current */}
-            <motion.div
-              key={currentIndex + (isSpinning ? "-spin" : "-stop")}
-              animate={{
-                scale: isSpinning ? [1, 1.08, 1] : 1.15,
-                y: isSpinning ? [0, -3, 0] : 0,
-              }}
-              transition={
-                isSpinning
-                  ? { duration: 0.12 }
-                  : { type: "spring", stiffness: 200, damping: 15 }
-              }
-              className={`text-3xl md:text-4xl font-body font-bold truncate w-full text-center tracking-wide ${
-                winnerIndex === currentIndex && !isSpinning
-                  ? "gold-text"
-                  : "text-[#faf8f3]"
-              }`}
-            >
-              {labels[currentIndex]}
-            </motion.div>
+          {/* Reel */}
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            {REEL_ITEMS.map((item, idx) => {
+              const labelIdx = wrapIndex(currentIndex + item.offset, labels.length);
+              const isCenter = item.offset === 0;
+              const isWinner = winnerIndex === labelIdx && !isSpinning && isCenter;
 
-            {/* Next */}
-            <motion.div
-              animate={{
-                opacity: isSpinning ? 0.2 : 0.3,
-                scale: isSpinning ? 0.8 : 0.85,
-                y: isSpinning ? 6 : 0,
-                filter: isSpinning ? "blur(4px)" : "blur(2px)",
-              }}
-              className="text-lg font-body font-medium text-[#475569] truncate w-full text-center"
-            >
-              {labels[nextIndex]}
-            </motion.div>
+              return (
+                <motion.div
+                  key={`${idx}-${labelIdx}-${isSpinning ? "spin" : "stop"}`}
+                  initial={false}
+                  animate={{
+                    y: item.y,
+                    scale: item.scale,
+                    rotateX: item.rotX,
+                    opacity: item.opacity,
+                    z: item.z,
+                  }}
+                  transition={
+                    isCenter && !isSpinning
+                      ? { type: "spring", stiffness: 280, damping: 22 }
+                      : { duration: 0.08 }
+                  }
+                  className="absolute w-full px-6 text-center flex items-center justify-center"
+                  style={{
+                    transformStyle: "preserve-3d",
+                    filter: `blur(${isSpinning && isCenter ? 0 : Math.max(0, Math.abs(item.offset) * 0.8 - 0.3)}px)`,
+                  }}
+                >
+                  <span
+                    className={`block truncate font-body font-bold tracking-wide ${
+                      isCenter
+                        ? isWinner
+                          ? "gold-text text-[2.75rem] md:text-[3.25rem]"
+                          : "text-[#faf8f3] text-[2.25rem] md:text-[2.75rem]"
+                        : Math.abs(item.offset) === 1
+                        ? "text-[#94a3b8] text-xl md:text-2xl"
+                        : "text-[#475569] text-sm md:text-lg"
+                    }`}
+                    style={{
+                      textShadow: isCenter
+                        ? "0 4px 30px rgba(0,0,0,0.6)"
+                        : undefined,
+                    }}
+                  >
+                    {labels[labelIdx]}
+                  </span>
+                </motion.div>
+              );
+            })}
           </div>
+
+          {/* Inner depth gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a1628]/30 via-transparent to-[#0a1628]/30 pointer-events-none z-10" />
+
+          {/* Side shadows */}
+          <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#0a1628]/40 to-transparent z-20 pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#0a1628]/40 to-transparent z-20 pointer-events-none" />
         </div>
 
-        {/* Decorative corner gems */}
-        <div className="absolute -top-2 -left-2 w-5 h-5">
-          <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
-        </div>
-        <div className="absolute -top-2 -right-2 w-5 h-5">
-          <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
-        </div>
-        <div className="absolute -bottom-2 -left-2 w-5 h-5">
-          <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
-        </div>
-        <div className="absolute -bottom-2 -right-2 w-5 h-5">
-          <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
-        </div>
+        {/* Corner gems */}
+        {[
+          "-top-2 -left-2",
+          "-top-2 -right-2",
+          "-bottom-2 -left-2",
+          "-bottom-2 -right-2",
+        ].map((pos, i) => (
+          <div key={i} className={`absolute ${pos} w-5 h-5`}>
+            <div className="w-full h-full bg-gradient-to-br from-[#f0d878] to-[#b8860b] rounded-sm rotate-45 shadow-[0_0_12px_rgba(212,175,55,0.6)]" />
+          </div>
+        ))}
       </div>
 
       {/* Progress dots */}
